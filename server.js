@@ -16,6 +16,19 @@ mongoose.connect(process.env.MONGODB_URI)
         console.error("MongoDB connection error:", error);
     });
 
+const formSchema = new mongoose.Schema({
+    name: String,
+    mobile: String,
+    email: String,
+    remarks: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const FormData = mongoose.model("FormData", formSchema, "wsdata");
+
 app.get("/", (req, res) => {
     res.send("WS Form Backend is running");
 });
