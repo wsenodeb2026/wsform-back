@@ -104,6 +104,33 @@ app.post("/upload-excel", async (req, res) => {
     }
 });
 
+app.post("/update-record", async (req, res) => {
+    try {
+        const { id, name, mobile, email, remarks } = req.body;
+
+        await FormData.findOneAndUpdate(
+            { id: id },
+            { name, mobile, email, remarks },
+            { new: true }
+        );
+
+        res.json({
+            success: true,
+            message: "Record updated successfully"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Update failed"
+        });
+
+    }
+});
+
 app.get("/data", async (req, res) => {
     try {
         const data = await FormData.find().sort({ createdAt: -1 });
