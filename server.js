@@ -33,6 +33,26 @@ app.get("/", (req, res) => {
     res.send("WS Form Backend is running");
 });
 
+app.post("/submit", async (req, res) => {
+    try {
+        const newForm = new FormData(req.body);
+
+        await newForm.save();
+
+        res.json({
+            success: true,
+            message: "Form submitted successfully"
+        });
+    } catch (error) {
+        console.error("Form submission error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Error saving form"
+        });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
