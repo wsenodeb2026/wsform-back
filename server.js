@@ -54,6 +54,55 @@ app.post("/submit", async (req, res) => {
     }
 });
 
+app.post("/upload-excel", async (req, res) => {
+    try {
+
+        const workbook = XLSX.read(req.body.file, {
+            type: "base64"
+        });
+
+        const sheetName = workbook.SheetNames[0];
+
+        const worksheet = workbook.Sheets[sheetName];
+
+        const excelData = XLSX.utils.sheet_to_json(worksheet);
+
+        for (const row of excelData) {
+
+            await FormData.findOneAndUpdate(
+                { id: row.ID },
+                {
+                    id: row.ID,
+                    name: row.Name,
+                    mobile: row.Mobile,
+                    email: row.Email,
+                    remarks: row.Remarks
+                },
+                {
+                    upsert: true,
+                    new: true
+                }
+            );
+
+        }
+
+        res.json({
+            success: true,
+            message: excelData.length + " records uploaded successfully"
+        });
+
+    } catch (error) {
+
+        console.error("Excel upload error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Error uploading Excel file"
+        });
+
+    }
+});
+
 app.get("/data", async (req, res) => {
     try {
         const data = await FormData.find().sort({ createdAt: -1 });
