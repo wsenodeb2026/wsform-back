@@ -53,6 +53,21 @@ app.post("/submit", async (req, res) => {
     }
 });
 
+app.get("/data", async (req, res) => {
+    try {
+        const data = await FormData.find().sort({ createdAt: -1 });
+
+        res.json(data);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Error fetching data"
+        });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
