@@ -30,6 +30,36 @@ const formSchema = new mongoose.Schema({
 });
 
 const FormData = mongoose.model("FormData", formSchema, "wsdata");
+app.get("/search/:id", async (req, res) => {
+    try {
+
+        const record = await FormData.findOne({
+            id: req.params.id
+        });
+
+        if (!record) {
+            return res.status(404).json({
+                success: false,
+                message: "Record not found"
+            });
+        }
+
+        res.json({
+            success: true,
+            data: record
+        });
+
+    } catch (error) {
+
+        console.error("Search error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Error searching record"
+        });
+
+    }
+});
 
 app.get("/", (req, res) => {
     res.send("WS Form Backend is running");
