@@ -4,6 +4,7 @@ const cors = require("cors");
 const XLSX = require("xlsx");
 
 const app = express();
+app.use(express.static("frontgit"));
 
 app.use(cors());
 app.use(express.json());
