@@ -252,42 +252,44 @@ async function searchRecord() {
 
         resultDiv.innerHTML = `
 
-            <h3>Record Found</h3>
+            <div style="display:flex; align-items:flex-end; gap:15px; flex-wrap:wrap;">
 
-            <p><b>ID:</b> ${record.id}</p>
+    <div>
+        <b>Name:</b><br>
+        <input type="text"
+               id="editName"
+               value="${record.name || ""}">
+    </div>
 
-            <p>
-                <b>Name:</b><br>
-                <input type="text"
-                       id="editName"
-                       value="${record.name || ""}">
-            </p>
+    <div>
+        <b>Mobile:</b><br>
+        <input type="text"
+               id="editMobile"
+               value="${record.mobile || ""}">
+    </div>
 
-            <p>
-                <b>Mobile:</b><br>
-                <input type="text"
-                       id="editMobile"
-                       value="${record.mobile || ""}">
-            </p>
+    <div>
+        <b>Email:</b><br>
+        <input type="email"
+               id="editEmail"
+               value="${record.email || ""}">
+    </div>
 
-            <p>
-                <b>Email:</b><br>
-                <input type="email"
-                       id="editEmail"
-                       value="${record.email || ""}">
-            </p>
+    <div>
+        <b>Remarks:</b><br>
+        <input type="text"
+               id="editRemarks"
+               value="${record.remarks || ""}"
+               style="width:250px;">
+    </div>
 
-            <p>
-                <b>Remarks:</b><br>
-                <textarea id="editRemarks"
-                          rows="4"
-                          cols="40">${record.remarks || ""}</textarea>
-            </p>
+    <div>
+        <button onclick="saveMongoRecord('${record.id}')">
+            Save Changes
+        </button>
+    </div>
 
-            <button onclick="saveMongoRecord('${record.id}')">
-                Save Changes
-            </button>
-
+</div>
         `;
 
     } catch (error) {
