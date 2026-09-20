@@ -1,68 +1,256 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
-    <title>Online Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>eNodeB Management System</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #eef3f8, #dfe9f3);
+        color: #1f2937;
+        min-height: 100vh;
+    }
+
+    .header {
+        background: #17365d;
+        color: white;
+        padding: 22px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    .logo {
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        opacity: 0.85;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 70px auto;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .welcome {
+        background: white;
+        border-radius: 16px;
+        padding: 50px 30px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+        margin: 0 0 15px;
+        font-size: 38px;
+        color: #17365d;
+    }
+
+    .description {
+        max-width: 700px;
+        margin: 0 auto 40px;
+        font-size: 17px;
+        line-height: 1.7;
+        color: #5b6470;
+    }
+
+    .cards {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        width: 280px;
+        background: #f8fafc;
+        border: 1px solid #d8e0e8;
+        border-radius: 12px;
+        padding: 25px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .icon {
+        font-size: 38px;
+        margin-bottom: 15px;
+    }
+
+    .card h3 {
+        margin: 10px 0;
+        color: #17365d;
+    }
+
+    .card p {
+        font-size: 14px;
+        color: #68727e;
+        line-height: 1.5;
+        min-height: 45px;
+    }
+
+    .button {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 11px 22px;
+        background: #17365d;
+        color: white;
+        text-decoration: none;
+        border-radius: 7px;
+        font-size: 14px;
+    }
+
+    .button:hover {
+        background: #24558c;
+    }
+
+    .footer {
+        margin-top: 45px;
+        font-size: 13px;
+        color: #68727e;
+    }
+
+    @media (max-width: 600px) {
+
+        .header {
+            padding: 18px 20px;
+            flex-direction: column;
+            gap: 5px;
+            text-align: center;
+        }
+
+        .container {
+            margin: 30px auto;
+        }
+
+        .welcome {
+            padding: 35px 18px;
+        }
+
+        h1 {
+            font-size: 29px;
+        }
+
+        .description {
+            font-size: 15px;
+        }
+
+        .card {
+            width: 100%;
+        }
+    }
+</style>
+```
+
 </head>
 
 <body>
 
-    <h2>Online Form</h2>
+```
+<div class="header">
+    <div class="logo">eNodeB</div>
+    <div class="subtitle">Management &amp; Data System</div>
+</div>
 
-    <form>
-        <label>Name:</label><br>
-        <input type="text" name="name"><br><br>
 
-        <label>Mobile:</label><br>
-        <input type="text" name="mobile"><br><br>
+<div class="container">
 
-        <label>Email:</label><br>
-        <input type="email" name="email"><br><br>
+    <div class="welcome">
 
-        <label>Remarks:</label><br>
-        <textarea name="remarks"></textarea><br><br>
+        <h1>Welcome to eNodeB Management System</h1>
 
-        <button type="submit">Submit</button>
-    </form>
-    <script>
-document.querySelector("form").addEventListener("submit", async function(event) {
+        <p class="description">
+            A centralized web-based system for managing network records,
+            viewing reports, uploading Excel data and maintaining
+            operational information.
+        </p>
 
-    event.preventDefault();
 
-    const formData = {
-        name: document.querySelector('[name="name"]').value,
-        mobile: document.querySelector('[name="mobile"]').value,
-        email: document.querySelector('[name="email"]').value,
-        remarks: document.querySelector('[name="remarks"]').value
-    };
+        <div class="cards">
 
-    try {
+            <div class="card">
 
-        const response = await fetch("https://wsform-back.onrender.com/submit",{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(formData)
-        });
+                <div class="icon">📝</div>
 
-        const result = await response.json();
+                <h3>Data Entry</h3>
 
-        if (result.success) {
-            alert("Form submitted successfully!");
-            document.querySelector("form").reset();
-        } else {
-            alert("Error submitting form.");
-        }
+                <p>
+                    Enter and submit new network records
+                    to the system.
+                </p>
 
-    } catch (error) {
+                <a class="button" href="form.html">
+                    Open
+                </a>
 
-        console.error(error);
-        alert("Unable to connect to server.");
+            </div>
 
-    }
 
-});
-</script>
+            <div class="card">
+
+                <div class="icon">📊</div>
+
+                <h3>Reports</h3>
+
+                <p>
+                    View stored records and access
+                    available reports.
+                </p>
+
+                <a class="button" href="report.html">
+                    View Reports
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon">📁</div>
+
+                <h3>Excel &amp; Database</h3>
+
+                <p>
+                    Upload Excel data and search or
+                    update MongoDB records.
+                </p>
+
+                <a class="button" href="testgitexcel.html">
+                    Open
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer">
+            eNodeB Management System
+        </div>
+
+    </div>
+
+</div>
+```
 
 </body>
 </html>
