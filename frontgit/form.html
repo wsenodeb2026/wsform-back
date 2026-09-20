@@ -1,11 +1,13 @@
-
+```html
 <!DOCTYPE html>
 <html>
 
 <head>
+
     <title>Excel Upload</title>
 
     <style>
+
         body {
             font-family: Arial;
             margin: 30px;
@@ -15,87 +17,220 @@
             padding: 8px;
             margin: 5px;
         }
+
+        button {
+            cursor: pointer;
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-    <!-- Home Button -->
-    <button onclick="window.location.href='index.html'">
+
+    <!-- HOME BUTTON -->
+
+    <button
+        onclick="window.location.href='index.html'"
+        style="
+            background:#007bff;
+            color:white;
+            border:none;
+            border-radius:5px;
+        ">
+
         ← Home
+
     </button>
+
 
     <h2>Excel Upload</h2>
 
-    <!-- Select Excel -->
-    <input type="file" id="excelFile" accept=".xlsx,.xls">
 
-    <!-- Upload Excel -->
-    <button onclick="uploadExcel()">
+    <!-- SELECT EXCEL -->
+
+    <input
+        type="file"
+        id="excelFile"
+        accept=".xlsx,.xls">
+
+
+    <!-- UPLOAD -->
+
+    <button
+        onclick="uploadExcel()">
+
         Upload Excel → MongoDB
+
     </button>
 
 
-    <script>
+<script>
 
-    async function uploadExcel() {
 
-        const file =
-            document.getElementById("excelFile").files[0];
+async function uploadExcel() {
 
-        if (!file) {
-            alert("Please select an Excel file first.");
-            return;
-        }
 
-        alert("Uploading Excel...");
+    /* GET SELECTED FILE */
 
-        const reader = new FileReader();
+    const file =
+        document.getElementById("excelFile").files[0];
 
-        reader.onload = async function(e) {
 
-            try {
+    if (!file) {
 
-                const base64 =
-                    e.target.result.split(",")[1];
+        alert(
+            "Please select an Excel file first."
+        );
 
-                const response = await fetch(
+        return;
+    }
+
+
+    alert("Uploading Excel...");
+
+
+    /* READ FILE */
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        async function(e) {
+
+
+        try {
+
+
+            /* CONVERT FILE TO BASE64 */
+
+            const base64 =
+                e.target.result.split(",")[1];
+
+
+            /* SEND TO RENDER */
+
+            const response =
+                await fetch(
                     "https://enodeb.onrender.com/upload-excel",
                     {
+
                         method: "POST",
 
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type":
+                                "application/json"
                         },
 
                         body: JSON.stringify({
                             file: base64
                         })
+
                     }
                 );
 
-                const result =
-                    await response.json();
 
-                alert(
-                    result.message ||
-                    "Excel uploaded successfully."
-                );
+            /* GET SERVER RESPONSE */
 
-            } catch (error) {
+            const text =
+                await response.text();
 
-                console.error(error);
 
-                alert("Error connecting to Render.");
+            console.log(
+                "HTTP Status:",
+                response.status
+            );
 
+
+            console.log(
+                "Server Response:",
+                text
+            );
+
+
+            /* SUCCESS */
+
+            if (response.ok) {
+
+                try {
+
+                    const result =
+                        JSON.parse(text);
+
+                    alert(
+                        result.message ||
+                        "Excel uploaded successfully."
+                    );
+
+                } catch {
+
+                    alert(
+                        "Excel uploaded successfully."
+                    );
+
+                }
+
+                return;
             }
+
+
+            /* SERVER ERROR */
+
+            alert(
+                "Upload failed.\n\n" +
+                "HTTP Status: " +
+                response.status +
+                "\n\n" +
+                text
+            );
+
+
+        }
+
+
+        catch(error) {
+
+
+            console.error(
+                "Upload error:",
+                error
+            );
+
+
+            alert(
+                "Error connecting to Render.\n\n" +
+                error.message
+            );
+
+        }
+
+    };
+
+
+    /* FILE READ ERROR */
+
+    reader.onerror =
+        function() {
+
+            alert(
+                "Unable to read the Excel file."
+            );
+
         };
 
-        reader.readAsDataURL(file);
-    }
 
-    </script>
+    reader.readAsDataURL(file);
+
+}
+
+
+</script>
+
 
 </body>
 
 </html>
+```
