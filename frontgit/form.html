@@ -1,24 +1,279 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Excel Upload</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            margin: 30px;
+        }
+
+        input, button {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+
 <body>
 
-    <!-- Home Button -->
+    <!-- HOME BUTTON -->
+
     <div style="margin-bottom:15px;">
-        <button onclick="window.location.href='index.html'"
-            style="padding:8px 18px;
-                   background:#007bff;
-                   color:white;
-                   border:none;
-                   border-radius:5px;
-                   cursor:pointer;">
+
+        <button
+            onclick="window.location.href='index.html'"
+            style="
+                padding:8px 18px;
+                background:#007bff;
+                color:white;
+                border:none;
+                border-radius:5px;
+                cursor:pointer;
+            ">
+
             ← Home
+
         </button>
+
     </div>
+
 
     <h2>Excel Upload</h2>
 
-    <input type="file" id="excelFile" accept=".xlsx,.xls">
 
-    <button onclick="uploadExcel()">
+    <!-- EXCEL FILE -->
+
+    <input
+        type="file"
+        id="excelFile"
+        accept=".xlsx,.xls">
+
+
+    <!-- UPLOAD BUTTON -->
+
+    <button
+        onclick="uploadExcel()"
+        style="
+            background:#28a745;
+            color:white;
+            border:none;
+            border-radius:5px;
+        ">
+
         Upload to MongoDB
+
     </button>
 
+
+    <!-- STATUS -->
+
+    <div id="status"></div>
+
+
+<script>
+
+
+async function uploadExcel() {
+
+    const fileInput =
+        document.getElementById("excelFile");
+
+    const status =
+        document.getElementById("status");
+
+
+    /* CHECK FILE */
+
+    if (!fileInput.files.length) {
+
+        alert("Please select an Excel file first.");
+
+        return;
+    }
+
+
+    const file =
+        fileInput.files[0];
+
+
+    status.innerHTML =
+        "Reading Excel file...";
+
+
+    try {
+
+
+        /* READ EXCEL FILE */
+
+        const reader = new FileReader();
+
+
+        reader.onload = async function(e) {
+
+            try {
+
+
+                const data =
+                    new Uint8Array(e.target.result);
+
+
+                const workbook =
+                    XLSX.read(data, {
+                        type: "array"
+                    });
+
+
+                const sheetName =
+                    workbook.SheetNames[0];
+
+
+                const worksheet =
+                    workbook.Sheets[sheetName];
+
+
+                /*
+                 * Convert Excel sheet
+                 * into JSON
+                 */
+
+                const excelData =
+                    XLSX.utils.sheet_to_json(
+                        worksheet,
+                        {
+                            defval: ""
+                        }
+                    );
+
+
+                if (excelData.length === 0) {
+
+                    status.innerHTML =
+                        "Excel file is empty.";
+
+                    return;
+                }
+
+
+                status.innerHTML =
+                    "Uploading " +
+                    excelData.length +
+                    " records to MongoDB...";
+
+
+                /* SEND DATA TO RENDER */
+
+                const response =
+                    await fetch(
+                        "https://enodeb.onrender.com/upload-excel",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                data: excelData
+                            })
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (response.ok && result.success) {
+
+                    status.innerHTML =
+                        "✓ Excel data uploaded successfully.";
+
+                    alert(
+                        "Excel data uploaded successfully."
+                    );
+
+                } else {
+
+                    status.innerHTML =
+                        "Upload failed.";
+
+                    alert(
+                        result.message ||
+                        "Excel upload failed."
+                    );
+
+                    console.error(result);
+
+                }
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                status.innerHTML =
+                    "Error processing Excel file.";
+
+                alert(
+                    "Error processing Excel file."
+                );
+
+            }
+
+        };
+
+
+        reader.onerror = function() {
+
+            status.innerHTML =
+                "Unable to read Excel file.";
+
+            alert(
+                "Unable to read Excel file."
+            );
+
+        };
+
+
+        reader.readAsArrayBuffer(file);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.innerHTML =
+            "Upload failed.";
+
+        alert("Upload failed.");
+
+    }
+
+}
+
+</script>
+
+
 </body>
+</html>
+```
