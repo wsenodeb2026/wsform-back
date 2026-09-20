@@ -1,72 +1,228 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
+
 <head>
-    <title>Form Report</title>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>eNodeB Data Report</title>
+
+<style>
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        background: #f3f6fa;
+    }
+
+    .header {
+        background: #17365d;
+        color: white;
+        padding: 20px 30px;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 26px;
+    }
+
+    .header p {
+        margin: 5px 0 0;
+        font-size: 14px;
+    }
+
+    .container {
+        padding: 25px;
+    }
+
+    .table-container {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 900px;
+    }
+
+    th {
+        background: #17365d;
+        color: white;
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+
+    td {
+        padding: 9px;
+        border: 1px solid #ccc;
+    }
+
+    tr:nth-child(even) {
+        background: #f7f9fb;
+    }
+
+    .status {
+        margin-bottom: 15px;
+        font-size: 14px;
+        color: #555;
+    }
+
+</style>
+```
+
 </head>
 
 <body>
 
-    <h2>Form Report</h2>
+<div class="header">
 
-    <table border="1" cellpadding="8" cellspacing="0">
+```
+<h1>eNodeB Data Report</h1>
+
+<p>Existing data stored in MongoDB</p>
+```
+
+</div>
+
+<div class="container">
+
+```
+<div class="status" id="status">
+    Loading data...
+</div>
+
+
+<div class="table-container">
+
+    <table>
+
         <thead>
+
             <tr>
+
+                <th>ID</th>
+
                 <th>Name</th>
+
                 <th>Mobile</th>
+
                 <th>Email</th>
+
                 <th>Remarks</th>
+
                 <th>Date</th>
+
             </tr>
+
         </thead>
 
+
         <tbody id="reportData">
+
         </tbody>
+
     </table>
 
-    <script>
+</div>
+```
 
-    async function loadData() {
+</div>
 
-        try {
+<script>
 
-            const response = await fetch(
-                "https://enodeb.onrender.com/data"
+
+async function loadData() {
+
+    try {
+
+        const response = await fetch("/data");
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " + response.status
             );
-
-            const data = await response.json();
-
-            const tableBody = document.getElementById("reportData");
-
-            tableBody.innerHTML = "";
-
-            data.forEach(item => {
-
-                const row = document.createElement("tr");
-
-                row.innerHTML = `
-                    <td>${item.name || ""}</td>
-                    <td>${item.mobile || ""}</td>
-                    <td>${item.email || ""}</td>
-                    <td>${item.remarks || ""}</td>
-                    <td>${item.createdAt ? new Date(item.createdAt).toLocaleString() : ""}</td>
-                `;
-
-                tableBody.appendChild(row);
-
-            });
-
-        } catch (error) {
-
-            console.error(error);
-            alert("Unable to load report.");
 
         }
 
+
+        const data = await response.json();
+
+
+        const tableBody =
+            document.getElementById("reportData");
+
+
+        tableBody.innerHTML = "";
+
+
+        data.forEach(function(item) {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>${item.id || ""}</td>
+
+                <td>${item.name || ""}</td>
+
+                <td>${item.mobile || ""}</td>
+
+                <td>${item.email || ""}</td>
+
+                <td>${item.remarks || ""}</td>
+
+                <td>
+                    ${
+                        item.createdAt
+                        ? new Date(item.createdAt)
+                            .toLocaleString()
+                        : ""
+                    }
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(row);
+
+        });
+
+
+        document.getElementById("status").innerText =
+            "Total records: " + data.length;
+
+
     }
 
-    loadData();
+    catch (error) {
 
-    </script>
+        console.error(error);
+
+        document.getElementById("status").innerText =
+            "Unable to load data from MongoDB.";
+
+    }
+
+}
+
+
+loadData();
+
+
+</script>
 
 </body>
+
 </html>
